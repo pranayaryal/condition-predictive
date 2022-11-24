@@ -12,23 +12,12 @@ import Cta from "../components/cta";
 import Faq from "../components/faq";
 import PopupWidget from "../components/popupWidget";
 
-//import dynamic from "next/dynamic";
-
-// const Video = dynamic(() => import("../components/video"));
-
-// const Benefits = dynamic(() => import("../components/benefits"));
-// const Footer = dynamic(() => import("../components/footer"));
-// const Testimonials = dynamic(() => import("../components/testimonials"));
-// const Cta = dynamic(() => import("../components/cta"));
-// const Faq = dynamic(() => import("../components/faq"));
-
-// const PopupWidget = dynamic(() => import("../components/popupWidget"));
 
 export default function Home() {
   return (
     <>
       <Head>
-        <title>Nextly - Free Nextjs & TailwindCSS Landing Page Template</title>
+        <title>Find your physician</title>
         <meta
           name="description"
           content="Nextly is a free landing page template built with next.js & Tailwind CSS"
@@ -38,15 +27,8 @@ export default function Home() {
 
       <Navbar />
       <Hero />
-      <SectionTitle
-        pretitle="Nextly Benefits"
-        title=" Why should you use this landing page">
-        Nextly is a free landing page & marketing website template for startups
-        and indie projects. Its built with Next.js & TailwindCSS. And its
-        completely open-source.
-      </SectionTitle>
       <Benefits data={benefitOne} />
-      <Benefits imgPos="right" data={benefitTwo} />
+      {/* <Benefits imgPos="right" data={benefitTwo} /> */}
       <SectionTitle
         pretitle="Watch a video"
         title="Learn how to fullfil your needs">
