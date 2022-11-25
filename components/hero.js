@@ -1,33 +1,26 @@
 import Image from "next/image";
 import Container from "./container";
-import { useState, useMemo } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import heroImg from "../public/img/hero.png";
 import { Combobox } from "@headlessui/react";
 
-const usToggleOnFocus = (initialState = false) => {
-  const [show, toggle] = useState(initialState);
-
-  const eventHandlers = useMemo(() => ({
-    onFocus: () => toggle(true),
-    onBlur: () => toggle(false),
-  }), []);
-
-  return [show, eventHandlers];
-}
 
 export default function Hero() {
-  const conditions = [
+  const [ display, setDisplay ] = useState(false);
+  const [ search, setSearch ] = useState("");
+  const [showOptions, setShowOptions] = useState(false);
+  const wrapperRef = useRef(null)
+
+  const [ popularSpecialties, setPopularSpecialties ] = useState([
     "Primary Care Physician",
     "Dermatologist",
     "OB-GYN (Obstetrician-Gynecologist)",
     "Ear, Nose & Throat Doctor",
     "Eye Doctor",
     "Psychiatrist",
-    "Orthopedic Surgeon (Orthopedist)",
-  ];
+    "Orthopedic Surgeon (Orthopedist)"]);
 
-  const alphab = [
-    "Acupuncturist",
+  const [ alphabSpec, setAlphabSpec ] = useState(["Acupuncturist",
     "Allergist (Immunologist)",
     "Audiologist",
     "Cardiologist (Heart Doctor)",
@@ -81,38 +74,32 @@ export default function Hero() {
     "Vascular Surgeon",
     "Endodontist",
     "Periodontist"
-]
+])
 
-  const [show, eventHandlers] = usToggleOnFocus();
 
-  const [selectedCondition, setSelectedCondition] = useState(conditions[0])
-  const [query, setQuery] = useState("")
-  const [showOptions, setShowOptions] = useState(false);
+  useEffect(() => {
+    window.addEventListener("mousedown", handleClickOutside)
+    return () => {
+      window.removeEventListener("mousedown", handleClickOutside)
+    }
 
-  const handleFocusDropdown = (e) => {
-    console.log('from handleFocusDropdown')
-    show(true)
-    setSelectedCondition(e.target.value)
+  })
+
+  const handleClickOutside = event => {
+      const { current: wrap  } = wrapperRef;
+      if (wrap && !wrap.contains(event.target)){
+        setDisplay(false) 
+      }
+  }
+  
+  const updateSearch = value => {
+    setSearch(value);
+    setDisplay(false);
   }
 
 
 
-  const handleDropdownChange = (e) => {
-    setSelectedCondition(e.target.value)
-  }
 
-  const handleShowOptions = () => {
-    console.log('you came here')
-    setShowOptions(true)
-    console.log(showOptions)
-  }
-
-  const filteredCondition =
-    query === ''
-      ? conditions
-      : conditions.filter((condition) => {
-        return condition.toLowerCase().includes(query.toLowerCase())
-      });
   return (
     <>
       <Container className="flex flex-wrap flex-col">
@@ -122,28 +109,42 @@ export default function Hero() {
               Find your physician
             </h1>
 
-            <div className="absolute flex mt-8 space-y-0 justify-center flex-row">
+            <div
+              ref={wrapperRef} 
+              className="relative flex mt-8 space-y-0 justify-center flex-row">
               <input
                 type="text"
+                value={search}
                 id="condition"
-                value={selectedCondition}
                 placeholder="Condition, procedure, doctor ..."
                 className="w-full px-3 py-2 placeholder-gray-400 bg-white-border border border-gray-500 rounded-md focus:outline-none"
-                {...eventHandlers}
+                onClick={() => setDisplay(!display)}
+                onChange={event => setSearch(event.target.value)}
               />
-                {(
+                {display && (
                   <div className="absolute overflow-scroll h-96 p-4 flex flex-col min-w-max left-1 z-50 top-10 bg-gray-100 border border-gray-200 shadow-sm rounded-md"
-                    onMouseEnter={() => handleFocusDropdown}
                     >
                     <p className="text-sm text-gray-500 tracking-wide">Popular specialties</p>
-                    {conditions.map(condition => {
-                      return <p className="text-gray-600 mt-3 hover:bg-yellow-100">{condition}</p>
+                    {popularSpecialties
+                      .filter((s) => s.indexOf(search.toLowerCase()) > -1)
+                      .map((value, i) => {
+                      return <p 
+                        onClick={() => updateSearch(value)}
+                        key={i}
+                        className="text-gray-600 mt-3 hover:bg-yellow-100 tracking-wide"
+                        tabIndex="0"
+                        >{value}</p>
                     })}
-                    <p 
-                     className="text-sm text-gray-500 tracking-wide mt-4">More specialties (a-z)</p>
-                    {alphab.map(a => {
-                      return <p
-                        className="text-gray-600 mt-3 hover:bg-yellow-100">{a}</p>
+                    <p className="text-sm mt-5 text-gray-500 tracking-wide">More specialties (a-z)</p>
+                    {alphabSpec
+                      .filter(s => s.indexOf(search.toLowerCase()) > -1)
+                      .map((value, i) => {
+                      return <p 
+                        onClick={() => updateSearch(value)}
+                        key={i}
+                        className="text-gray-600 mt-3 hover:bg-yellow-100 tracking-wide"
+                        tabIndex="0"
+                        >{value}</p>
                     })}
                   </div>
                 )}
