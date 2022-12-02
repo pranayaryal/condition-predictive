@@ -39,13 +39,6 @@ export default function Benefits(props) {
               </p>
             </div>
 
-            <div className="w-full mt-5">
-              {data.bullets.map((item, index) => (
-                <Benefit key={index} title={item.title} icon={item.icon}>
-                  {item.desc}
-                </Benefit>
-              ))}
-            </div>
           </div>
         </div>
       </Container>
