@@ -5,9 +5,6 @@ import { Disclosure } from "@headlessui/react";
 export default function Navbar() {
   const navigation = [
     "About",
-    "Pricing",
-    "Blog",
-    "Contact",
   ];
 
   return (
@@ -29,7 +26,7 @@ export default function Navbar() {
                         className="w-8"
                       />
                     </span>
-                    <span>Find Physician</span>
+                    <span>Symptom Search</span>
                   </a>
                 </Link>
 
